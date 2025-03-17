@@ -102,6 +102,7 @@ class MusicPlayer:
     
     def load_music(self):
         load_music(self)
+        print(f"Loaded songs: {self.list_of_songs}")
 
     def add_music(self):  # Add to current songlist instead of replacing it
         add_music(self)
@@ -157,24 +158,40 @@ class MusicPlayer:
         progress_bar_update(self)
 
     def play_music(self):
-        if self.list_of_songs:
-            song_name = self.list_of_songs[self.current_song_index]
-            pygame.mixer.music.load(song_name)
-            pygame.mixer.music.play()
-            pygame.mixer.music.set_endevent(pygame.USEREVENT)  # Set event to be triggered when song ends
-            self.threading()  # Start updating the progress bar in a separate thread to avoid freezing the GUI
-        else:
-            self.random_play()
-
-    def skip_forward(self):
-        song_path = self.list_of_songs[self.current_song_index]
         try:
             if self.list_of_songs:
-                pygame.mixer.music.stop()  # stop current song to prevent error playing next song
+                song_name = self.list_of_songs[self.current_song_index]
+                print(f"Playing: {os.path.basename(song_name)}")
+                pygame.mixer.music.load(song_name)
+                pygame.mixer.music.play()
+                print("song is now playing")
+                pygame.mixer.music.set_endevent(pygame.USEREVENT)  # Set event to be triggered when song ends
+                print("USEREVENT set for songend")
+                self.threading()  # Start updating the progress bar in a separate thread to avoid freezing the GUI
+            else:
+                self.random_play()
+        except Exception as e:
+            print(f"Error loading song: {e}")
+
+    def skip_forward(self):
+        # song_path = self.list_of_songs[self.current_song_index]
+        # try:
+        #     if self.list_of_songs:
+        #         pygame.mixer.music.stop()  # stop current song to prevent error playing next song
+        #         self.current_song_index = (self.current_song_index + 1) % len(self.list_of_songs)
+        #         self.play_music()
+        # except Exception as e:
+        #     print(f"Error loading next song:{os.path.basename(song_path)}, {e}")
+        try:
+            if self.list_of_songs:
+                print(f"Skipping to next song. Current index: {self.current_song_index}")
+                pygame.mixer.music.stop()  # Stop current song to prevent error playing next song
                 self.current_song_index = (self.current_song_index + 1) % len(self.list_of_songs)
+                print(f"New index: {self.current_song_index}")
                 self.play_music()
         except Exception as e:
-            print(f"Error loading next song:{os.path.basename(song_path)}, {e}")
+            print(f"Error loading next song: {e}")
+            
 
     def skip_backward(self):
         song_path = self.list_of_songs[self.current_song_index]
@@ -203,8 +220,10 @@ class MusicPlayer:
 
 
 def check_music_end():
+    print("Checking for USEREVENT...")
     for event in pygame.event.get():
         if event.type == pygame.USEREVENT:
+            print("USEREVENT detected. Skipping to next song...")
             app.skip_forward()
     root.after(100, check_music_end)
 
@@ -212,6 +231,5 @@ def check_music_end():
 if __name__ == "__main__":
     root = ctk.CTk()
     app = MusicPlayer(root)
-    
     root.after(100, check_music_end)
     root.mainloop()
