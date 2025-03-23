@@ -15,7 +15,7 @@ ctk.set_appearance_mode("System")  # Modes: system (default), light, dark
 ctk.set_default_color_theme("dark-blue")  # Themes: blue (default), dark-blue, green
 
 pygame.mixer.init()
-# pygame.display.set_mode((1, 1))  # Initialize Pygame display module to prevet "video system not initialized"error
+pygame.display.set_mode((1, 1))  # Initialize Pygame display module to prevet "video system not initialized"error
 
 class MusicPlayer:
     
@@ -24,11 +24,19 @@ class MusicPlayer:
 
         
     def __init__(self, root):
+        self.root = root
+        self.list_of_songs = [
+        "C:/Users/mugger/Desktop/RHCP/1 - wissle.mp3",
+        "C:/Users/mugger/Desktop/RHCP/MIYAGI - Fire Man_.mp3"        
+        ]
+        self.play_music()
+        self.check_music_end()
+
         root.title('Music Player')
         root.geometry('400x480')
         root.resizable(False, False)
         
-        self.list_of_songs = []
+        #self.list_of_songs = []
         self.list_of_covers = []
         self.current_song_index = 0
         self.song_index = 1       
@@ -39,7 +47,7 @@ class MusicPlayer:
 # seek the track
 # pause and resume the track
 # image of the album cover
-# fix play button freeze 
+# fix play button freeze
        
         # Frame to hold Listbox and Scrollbar
         self.frame = ctk.CTkFrame(master=root, width=300, height=200)
@@ -149,7 +157,6 @@ class MusicPlayer:
             self.song_name_label = tkinter.Label(text=stripped_string, bg='#222222', fg='white')
             self.song_name_label.place(relx=0.4, rely=0.6)
 
-
     def threading(self):
         t1 = Thread(target=self.progress_bar_update)
         t1.start()
@@ -219,17 +226,16 @@ class MusicPlayer:
             pygame.mixer.music.set_pos(new_pos)
 
 
-def check_music_end():
-    print("Checking for USEREVENT...")
-    for event in pygame.event.get():
-        if event.type == pygame.USEREVENT:
-            print("USEREVENT detected. Skipping to next song...")
-            app.skip_forward()
-    root.after(100, check_music_end)
 
+    def check_music_end(self):
+        print("Checking for USEREVENT...")
+        for event in pygame.event.get():
+            if event.type == pygame.USEREVENT:
+                print("USEREVENT detected. Skipping to next song...")
+                self.skip_forward()
+        self.root.after(100, self.check_music_end)
 
 if __name__ == "__main__":
     root = ctk.CTk()
     app = MusicPlayer(root)
-    root.after(100, check_music_end)
     root.mainloop()
