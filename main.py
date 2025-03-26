@@ -29,6 +29,7 @@ class MusicPlayer:
         # "C:/Users/mugger/Desktop/RHCP/1 - wissle.mp3",
         # "C:/Users/mugger/Desktop/RHCP/MIYAGI - Fire Man_.mp3"        
         # ]
+        self.is_paused = False
         self.play_music()
         self.check_music_end()
 
@@ -45,11 +46,12 @@ class MusicPlayer:
 
 # play track after track
 # seek the track
-# pause and resume the track
+# pause and resume the track on Play button click and pause button click
+# timer for current track
 # image of the album cover
 # fix play button freeze
        
-        # Frame to hold Listbox and Scrollbar
+        # Frame holds Listbox and Scrollbar
         self.frame = ctk.CTkFrame(master=root, width=300, height=200)
         self.frame.place(relx=0.5, rely=0.35, anchor=tkinter.CENTER)
         
@@ -164,9 +166,29 @@ class MusicPlayer:
     def progress_bar_update(self):
         progress_bar_update(self)
 
+    # def play_music(self):
+    #     try:
+    #         if self.list_of_songs:
+    #             song_name = self.list_of_songs[self.current_song_index]
+    #             print(f"Playing: {os.path.basename(song_name)}")
+    #             pygame.mixer.music.load(song_name)
+    #             pygame.mixer.music.play()
+    #             print("song is now playing")
+    #             pygame.mixer.music.set_endevent(pygame.USEREVENT)  # Set event to be triggered when song ends
+    #             print("USEREVENT set for songend")
+    #             self.threading()  # Start updating the progress bar in a separate thread to avoid freezing the GUI
+    #         else:
+    #             self.random_play()
+    #     except Exception as e:
+    #         print(f"Error loading song: {e}")
+
     def play_music(self):
         try:
-            if self.list_of_songs:
+            if self.is_paused:
+                pygame.mixer.music.unpause()
+                self.is_pauses = False
+                print("Music resumed")
+            elif self.list_of_songs:
                 song_name = self.list_of_songs[self.current_song_index]
                 print(f"Playing: {os.path.basename(song_name)}")
                 pygame.mixer.music.load(song_name)
@@ -206,6 +228,7 @@ class MusicPlayer:
         if pygame.mixer.music.get_busy():
             pygame.mixer.music.pause()
             self.is_paused = True
+            print("Music paused")
 
     def volume(self, value):
         volume = int(value) / 100
