@@ -25,10 +25,10 @@ class MusicPlayer:
         
     def __init__(self, root):
         self.root = root
-        self.list_of_songs = [
-        "C:/Users/mugger/Desktop/RHCP/1 - wissle.mp3",
-        "C:/Users/mugger/Desktop/RHCP/MIYAGI - Fire Man_.mp3"        
-        ]
+        # self.list_of_songs = [
+        # "C:/Users/mugger/Desktop/RHCP/1 - wissle.mp3",
+        # "C:/Users/mugger/Desktop/RHCP/MIYAGI - Fire Man_.mp3"        
+        # ]
         self.play_music()
         self.check_music_end()
 
@@ -36,7 +36,7 @@ class MusicPlayer:
         root.geometry('400x480')
         root.resizable(False, False)
         
-        #self.list_of_songs = []
+        self.list_of_songs = []
         self.list_of_covers = []
         self.current_song_index = 0
         self.song_index = 1       
@@ -181,14 +181,6 @@ class MusicPlayer:
             print(f"Error loading song: {e}")
 
     def skip_forward(self):
-        # song_path = self.list_of_songs[self.current_song_index]
-        # try:
-        #     if self.list_of_songs:
-        #         pygame.mixer.music.stop()  # stop current song to prevent error playing next song
-        #         self.current_song_index = (self.current_song_index + 1) % len(self.list_of_songs)
-        #         self.play_music()
-        # except Exception as e:
-        #     print(f"Error loading next song:{os.path.basename(song_path)}, {e}")
         try:
             if self.list_of_songs:
                 print(f"Skipping to next song. Current index: {self.current_song_index}")
@@ -221,11 +213,13 @@ class MusicPlayer:
 
     def set_song_position(self, value):
         if self.list_of_songs:
-            song_len = pygame.mixer.Sound(self.list_of_songs[self.current_song_index]).get_length()
-            new_pos = float(value) * song_len
-            pygame.mixer.music.set_pos(new_pos)
-
-
+            try:
+                song_len = pygame.mixer.Sound(self.list_of_songs[self.current_song_index]).get_length() # Get song length in seconds
+                new_pos = float(value) * song_len # Calculate new position in seconds
+                pygame.mixer.music.set_pos(new_pos) # Set new position
+                print(f"Set song pos to {new_pos} seconds")
+            except Exception as e:
+                print(f"Error setting song position: {e}")
 
     def check_music_end(self):
         print("Checking for USEREVENT...")
