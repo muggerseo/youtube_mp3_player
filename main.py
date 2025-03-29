@@ -3,7 +3,7 @@ import customtkinter as ctk
 import pygame
 from PIL import Image, ImageTk
 from threading import *
-import os, random
+import os, random, time
 # from tkinter import filedialog, messagebox
 # import time, math
 
@@ -96,6 +96,9 @@ class MusicPlayer:
         self.slider.set(25)  # volume slider 50% default
         self.volume(25)  # Set initial volume to 50%
 
+        self.timer_label = ctk.CTkLabel(master=root, text="00:00 / 00:00", font=("Helvetica", 10))
+        self.timer_label.place(relx=0.5, rely=0.95, anchor=tkinter.CENTER)
+
         self.progress_bar = ctk.CTkProgressBar(master=root, progress_color='#32a85a', width=250)
         self.progress_bar.place(relx=0.5, rely=0.92, anchor=tkinter.CENTER)
         self.progress_bar.set(0)
@@ -162,6 +165,23 @@ class MusicPlayer:
     def threading(self):
         t1 = Thread(target=self.progress_bar_update)
         t1.start()
+
+    def update_timer(self):
+        try:
+            song_len = pygame.mixer.Sound(self.list_of_songs[self.current_song_index]).get_length()
+            current_pos = pygame.mixer.music.get_pos() / 1000 # Convert milliseconds to seconds
+
+            elapsed_time = time.strftime("%M:%S", time.gmtime(current_pos))
+            total_time = time.strftime("%M:%S", time.gmtime(song_len))
+                                       
+            self.timer_label.configure(text=f"{elapsed_time} / {total_time}")
+
+            if pygame.mixer.music.get_busy():
+                self.root.after(1000, self.update_timer)  # Update every second
+            else:
+                self.timer_label.configure(text="00:00 / 00:00")   # Reset when new song starts
+        except Exception as e:
+            print(f"Error updating timer: {e}")
 
     def progress_bar_update(self):
         progress_bar_update(self)
