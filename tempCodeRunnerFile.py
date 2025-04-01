@@ -1,1 +1,3 @@
- self.progress_bar.bind("<ButtonRelease-1>", lambda event: self.set_song_position(self.progress_bar.ge
+if not self.list_of_songs:
+            #     print("No songs loaded")
+            #     return # Exit the method if no songs are loaded

@@ -25,13 +25,7 @@ class MusicPlayer:
         
     def __init__(self, root):
         self.root = root
-        # self.list_of_songs = [
-        # "C:/Users/mugger/Desktop/RHCP/1 - wissle.mp3",
-        # "C:/Users/mugger/Desktop/RHCP/MIYAGI - Fire Man_.mp3"        
-        # ]
         self.is_paused = False
-        self.play_music()
-        self.check_music_end()
 
         root.title('Music Player')
         root.geometry('400x480')
@@ -39,8 +33,11 @@ class MusicPlayer:
         
         self.list_of_songs = []
         self.list_of_covers = []
+        self.current_files = []
         self.current_song_index = 0
-        self.song_index = 1       
+        self.song_index = 1   
+        self.play_music()
+        self.check_music_end()    
 
         self.center_window(root, 400, 480)
 
@@ -186,24 +183,11 @@ class MusicPlayer:
     def progress_bar_update(self):
         progress_bar_update(self)
 
-    # def play_music(self):
-    #     try:
-    #         if self.list_of_songs:
-    #             song_name = self.list_of_songs[self.current_song_index]
-    #             print(f"Playing: {os.path.basename(song_name)}")
-    #             pygame.mixer.music.load(song_name)
-    #             pygame.mixer.music.play()
-    #             print("song is now playing")
-    #             pygame.mixer.music.set_endevent(pygame.USEREVENT)  # Set event to be triggered when song ends
-    #             print("USEREVENT set for songend")
-    #             self.threading()  # Start updating the progress bar in a separate thread to avoid freezing the GUI
-    #         else:
-    #             self.random_play()
-    #     except Exception as e:
-    #         print(f"Error loading song: {e}")
-
     def play_music(self):
         try:
+            # if not self.list_of_songs:
+            #     print("No songs loaded")
+            #     return # Exit the method if no songs are loaded
             if self.is_paused:
                 pygame.mixer.music.unpause()
                 self.is_pauses = False
@@ -215,12 +199,13 @@ class MusicPlayer:
                 pygame.mixer.music.play()
                 print("song is now playing")
                 pygame.mixer.music.set_endevent(pygame.USEREVENT)  # Set event to be triggered when song ends
-                print("USEREVENT set for songend")
+                print("USEREVENT set for song end")
                 self.threading()  # Start updating the progress bar in a separate thread to avoid freezing the GUI
             else:
                 self.random_play()
         except Exception as e:
             print(f"Error loading song: {e}")
+            
 
     def skip_forward(self):
         try:
@@ -270,7 +255,7 @@ class MusicPlayer:
             if event.type == pygame.USEREVENT:
                 print("USEREVENT detected. Skipping to next song...")
                 self.skip_forward()
-        self.root.after(100, self.check_music_end)
+        self.root.after(600, self.check_music_end)
 
 if __name__ == "__main__":
     root = ctk.CTk()
