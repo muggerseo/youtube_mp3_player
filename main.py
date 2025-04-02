@@ -118,20 +118,21 @@ class MusicPlayer:
         add_music(self)
 
     def random_play(self):
-        if self.current_files:
-            while True:
-                random_song = random.choice(self.current_files)
-                try:
-                    pygame.mixer.music.load(random_song)
-                    pygame.mixer.music.play()
-                    song_name = os.path.splitext(os.path.basename(random_song))[0]  # Remove the .mp3 extension
-                    self.label.configure(text=f"Now playing: {os.path.basename(song_name)}")
-                    self.scroll_song_name(os.path.basename(song_name))
-                    self.threading()
-                    break
-                except Exception as e:
-                    print(f"Error loading song: {e}")
-                    random_song()
+        if not self.current_files:
+            print("No songs loaded")
+            return
+        while True:
+            random_song = random.choice(self.current_files)
+            try:
+                pygame.mixer.music.load(random_song)
+                pygame.mixer.music.play()
+                song_name = os.path.splitext(os.path.basename(random_song))[0]  # Remove the .mp3 extension
+                self.song_name_label.configure(text=f"Now playing: {os.path.basename(song_name)}")
+                self.scroll_song_name(os.path.basename(song_name))
+                self.threading()
+                break
+            except Exception as e:
+                print(f"Error loading song: {e}")
 
     def get_albom_cover(self, song_name, current_song_index):  # PIL works
         try:
