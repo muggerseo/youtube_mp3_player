@@ -51,6 +51,9 @@ class MusicPlayer:
         # Frame holds Listbox and Scrollbar
         self.frame = ctk.CTkFrame(master=root, width=300, height=200)
         self.frame.place(relx=0.5, rely=0.35, anchor=tkinter.CENTER)
+
+        # self.album_cover_label = ctk.CTkFrame(master=root, text="")
+        # self.album_cover_label.place(relx=0.5, rely=0.3, anchor=tkinter.CENTER)
         
         # Scrollbar
         self.scrollbar = ctk.CTkScrollbar(self.frame, orientation="vertical")
