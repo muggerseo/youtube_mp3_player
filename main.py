@@ -28,33 +28,36 @@ class MusicPlayer:
         self.is_paused = False
 
         root.title('Music Player')
-        root.geometry('400x480')
+        root.geometry('600x480')
         root.resizable(False, False)
         
         self.list_of_songs = []
-        self.list_of_covers = []
+        self.list_of_covers = ["1.jpg", "2.jpg"]
         self.current_files = []
         self.current_song_index = 0
         self.song_index = 1   
         self.play_music()
         self.check_music_end()    
 
-        self.center_window(root, 400, 480)
+        self.center_window(root, 400, 600)
 
 # play track after track
 # seek the track
 # pause and resume the track on Play button click and pause button click
 # timer for current track
-# image of the album cover
 # fix play button freeze
+# scrollbar keep showing first track name played when press on next_song button
+# add volume control slider
+
        
+        # Album cover label
+        self.album_cover_label = ctk.CTkFrame(master=root)
+        self.album_cover_label.place(relx=0.5, rely=0.2, anchor=tkinter.CENTER)
+
         # Frame holds Listbox and Scrollbar
         self.frame = ctk.CTkFrame(master=root, width=300, height=200)
-        self.frame.place(relx=0.5, rely=0.35, anchor=tkinter.CENTER)
+        self.frame.place(relx=0.5, rely=0.45, anchor=tkinter.CENTER)
 
-        # self.album_cover_label = ctk.CTkFrame(master=root, text="")
-        # self.album_cover_label.place(relx=0.5, rely=0.3, anchor=tkinter.CENTER)
-        
         # Scrollbar
         self.scrollbar = ctk.CTkScrollbar(self.frame, orientation="vertical")
         self.scrollbar.pack(side="right", fill="y")
@@ -140,13 +143,11 @@ class MusicPlayer:
     def get_albom_cover(self, song_name, current_song_index):  # PIL works
         try:
             if self.list_of_covers and 0 <= current_song_index < len(self.list_of_covers):
-                # open and resize the cover image
-                image_path = self.list_of_covers[current_song_index]
+                image_path = self.list_of_covers[current_song_index] # open and resize the cover image
                 image = Image.open(image_path)
                 image = image.resize((100, 100), Image.ANTIALIAS)  # Resize to fit the label
 
-                # Convert the image to format that can be used in a Label
-                photo = ImageTk.PhotoImage(image)
+                photo = ImageTk.PhotoImage(image) 
                 if hasattr(self, 'cover_label'):
                     self.cover_label.configure(image=photo)
                     self.cover_label.image = photo  # Keep reference to avoid garbage collection
@@ -259,7 +260,7 @@ class MusicPlayer:
             if event.type == pygame.USEREVENT:
                 print("USEREVENT detected. Skipping to next song...")
                 self.skip_forward()
-        self.root.after(600, self.check_music_end)
+        self.root.after(1000, self.check_music_end)
 
 if __name__ == "__main__":
     root = ctk.CTk()
