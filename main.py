@@ -7,8 +7,7 @@ import os, random, time
 # from tkinter import filedialog, messagebox
 # import time, math
 
-from music_player_utils import play_on_clicks, center_window, scroll_song_name,\
-                         scroll_text, progress_bar_update, load_music, add_music 
+from music_player_utils import play_on_clicks, center_window, scroll_song_name, scroll_text, progress_bar_update, load_music, add_music 
 
 
 ctk.set_appearance_mode("System")  # Modes: system (default), light, dark
@@ -21,7 +20,6 @@ class MusicPlayer:
     
     def center_window(self, window, width, height):
         center_window(self, window, width, height)
-
         
     def __init__(self, root):
         self.root = root
@@ -48,7 +46,6 @@ class MusicPlayer:
 # fix play button freeze
 # scrollbar keep showing first track name played when press on next_song button
 # add volume control slider
-
        
         # Album cover label
         self.album_cover_label = ctk.CTkFrame(master=root)
@@ -129,7 +126,9 @@ class MusicPlayer:
             return
         while True:
             random_song = random.choice(self.current_files)
+            print(f"Attempting to play: {random_song}")  # Debugging output
             try:
+                pygame.mixer.music.stop()  # Stop any currently playing music
                 pygame.mixer.music.load(random_song)
                 pygame.mixer.music.play()
                 song_name = os.path.splitext(os.path.basename(random_song))[0]  # Remove the .mp3 extension
@@ -260,7 +259,7 @@ class MusicPlayer:
             if event.type == pygame.USEREVENT:
                 print("USEREVENT detected. Skipping to next song...")
                 self.skip_forward()
-        self.root.after(1000, self.check_music_end)
+        self.root.after(1500, self.check_music_end)
 
 if __name__ == "__main__":
     root = ctk.CTk()
