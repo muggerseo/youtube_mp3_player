@@ -17,7 +17,7 @@ pygame.mixer.init()
 pygame.display.set_mode((1, 1))  # Initialize Pygame display module to prevet "video system not initialized"error
 
 class MusicPlayer:
-    
+
     def center_window(self, window, width, height):
         center_window(self, window, width, height)
         
@@ -129,6 +129,7 @@ class MusicPlayer:
             print(f"Attempting to play: {random_song}")  # Debugging output
             try:
                 pygame.mixer.music.stop()  # Stop any currently playing music
+                time.sleep(0.1)  # Small delay to ensure the stop command is processed
                 pygame.mixer.music.load(random_song)
                 pygame.mixer.music.play()
                 song_name = os.path.splitext(os.path.basename(random_song))[0]  # Remove the .mp3 extension
