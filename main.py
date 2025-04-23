@@ -46,6 +46,8 @@ class MusicPlayer:
 # fix play button freeze
 # scrollbar keep showing first track name played when press on next_song button
 # add volume control slider
+# after track paused next track will not be played
+# add album cover
        
         # Album cover label
         self.album_cover_label = ctk.CTkFrame(master=root)
@@ -189,10 +191,7 @@ class MusicPlayer:
         progress_bar_update(self)
 
     def play_music(self):
-        try:
-            # if not self.list_of_songs:
-            #     print("No songs loaded")
-            #     return # Exit the method if no songs are loaded
+        try: 
             if self.is_paused:
                 pygame.mixer.music.unpause()
                 self.is_pauses = False
@@ -249,8 +248,11 @@ class MusicPlayer:
             try:
                 song_len = pygame.mixer.Sound(self.list_of_songs[self.current_song_index]).get_length() # Get song length in seconds
                 new_pos = float(value) * song_len # Calculate new position in seconds
+                if not pygame.mixer.music.get_busy():
+                    pygame.mixer.music.play()
                 pygame.mixer.music.set_pos(new_pos) # Set new position
                 print(f"Set song pos to {new_pos} seconds")
+                self.progress_bar.set(value)
             except Exception as e:
                 print(f"Error setting song position: {e}")
 
