@@ -25,6 +25,7 @@ def play_on_clicks(self, event):
         song_name = os.path.splitext(os.path.basename(song_path))[0]
         self.scroll_song_name(song_name)
         Thread(target=self.progress_bar_update, daemon=True).start()
+        print(f"Play_on_clicks: Playing song: {song_name}")
     except pygame.error as e:
         print(f"Error loading song:{os.path.basename(song_path)}, {e}")
         self.random_play()
@@ -49,7 +50,7 @@ def progress_bar_update(self):
             current_pos = pygame.mixer.music.get_pos() / 1000  # Position in seconds
             progress = min(current_pos / song_len, 1.0)  # Normalize progress (0.0 to 1.0)
             self.progress_bar.set(progress)
-            time.sleep(0.3)
+            #time.sleep(0.3)
         self.progress_bar.set(0)  # Reset after song finished
 
 def load_music(self):

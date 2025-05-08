@@ -41,7 +41,7 @@ class MusicPlayer:
 
 # play track after track
 # seek the track
-# pause and resume the track on Play button click and pause button click
+# pause and resume on one button done now need to add progress bar to show the current status of the track
 # timer for current track
 # fix play button freeze
 # scrollbar keep showing first track name played when press on next_song button
@@ -128,19 +128,19 @@ class MusicPlayer:
             return
         while True:
             random_song = random.choice(self.current_files)
-            print(f"Attempting to play: {random_song}")  # Debugging output
+            print(f"random_play: Attempting to play: {random_song}")  # Debugging output
             try:
                 pygame.mixer.music.stop()  # Stop any currently playing music
                 time.sleep(0.1)  # Small delay to ensure the stop command is processed
                 pygame.mixer.music.load(random_song)
                 pygame.mixer.music.play()
                 song_name = os.path.splitext(os.path.basename(random_song))[0]  # Remove the .mp3 extension
-                self.song_name_label.configure(text=f"Now playing: {os.path.basename(song_name)}")
+                self.song_name_label.configure(text=f"random_play: Now playing: {os.path.basename(song_name)}")
                 self.scroll_song_name(os.path.basename(song_name))
                 self.threading()
                 break
             except Exception as e:
-                print(f"Error loading song: {e}")
+                print(f"random_play: Error loading song: {e}")
 
     def get_albom_cover(self, song_name, current_song_index):  # PIL works
         try:
@@ -201,26 +201,28 @@ class MusicPlayer:
                 print(f"Playing: {os.path.basename(song_name)}")
                 pygame.mixer.music.load(song_name)
                 pygame.mixer.music.play()
-                print("song is now playing")
+                print("play_music: song is now playing")
                 pygame.mixer.music.set_endevent(pygame.USEREVENT)  # Set event to be triggered when song ends
                 print("USEREVENT set for song end")
                 self.threading()  # Start updating the progress bar in a separate thread to avoid freezing the GUI
             else:
                 self.random_play()
         except Exception as e:
-            print(f"Error loading song: {e}")
+            print(f"play_music: Error loading song: {e}")
             
 
     def skip_forward(self):
         try:
             if self.list_of_songs:
-                print(f"Skipping to next song. Current index: {self.current_song_index}")
+                self.is_paused = False  # Reset pause state
+                print(f"Skip_forward: Skipping to next song. Current index: {self.current_song_index}")
                 pygame.mixer.music.stop()  # Stop current song to prevent error playing next song
+                time.sleep(0.3)
                 self.current_song_index = (self.current_song_index + 1) % len(self.list_of_songs)
-                print(f"New index: {self.current_song_index}")
+                print(f"Skip_forward: New index: {self.current_song_index}")
                 self.play_music()
         except Exception as e:
-            print(f"Error loading next song: {e}")
+            print(f"Skip_forward: Error loading next song: {e}")
             
 
     def skip_backward(self):
@@ -231,14 +233,17 @@ class MusicPlayer:
                 self.current_song_index = (self.current_song_index - 1) % len(self.list_of_songs)
                 self.play_music()
         except Exception as e:
-            print(f"Error playing previous song:{os.path.basename(song_path)}, {e}")
+            print(f"Skip_backward: Error playing previous song:{os.path.basename(song_path)}, {e}")
 
     def pause_music(self):
         if pygame.mixer.music.get_busy():
             pygame.mixer.music.pause()
             self.is_paused = True
             print("Music paused")
-
+        else:
+             pygame.mixer.music.unpause()   
+             self.is_paysed = False
+             print("Music resumed")
     def volume(self, value):
         volume = int(value) / 100
         pygame.mixer.music.set_volume(volume)
@@ -249,7 +254,7 @@ class MusicPlayer:
                 song_len = pygame.mixer.Sound(self.list_of_songs[self.current_song_index]).get_length() # Get song length in seconds
                 new_pos = float(value) * song_len # Calculate new position in seconds
                 if not pygame.mixer.music.get_busy():
-                    pygame.mixer.music.play()
+                    pygame.mixer.music.play() 
                 pygame.mixer.music.set_pos(new_pos) # Set new position
                 print(f"Set song pos to {new_pos} seconds")
                 self.progress_bar.set(value)
