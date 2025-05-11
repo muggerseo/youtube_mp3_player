@@ -48,6 +48,7 @@ class MusicPlayer:
 # add volume control slider
 # after track paused next track will not be played
 # add album cover
+# start SETUSEREVENT only when list has a song in it
        
         # Album cover label
         self.album_cover_label = ctk.CTkFrame(master=root)
@@ -118,6 +119,8 @@ class MusicPlayer:
     def load_music(self):
         load_music(self)
         print(f"Loaded songs: {self.list_of_songs}")
+        if self.list_of_songs:
+            self.check_music_end()
 
     def add_music(self):  # Add to current songlist instead of replacing it
         add_music(self)
@@ -268,6 +271,17 @@ class MusicPlayer:
                 print("USEREVENT detected. Skipping to next song...")
                 self.skip_forward()
         self.root.after(1500, self.check_music_end)
+
+    # def check_music_end(self):
+    #     if not self.list_of_songs:
+    #         print("no songs loaded")
+    #         return
+    #     for event in pygame.event.get():
+    #         if event.type == pygame.USEREVENT:
+    #                 print("USEREVENT detected. Skipping to next song...")
+    #                 self.skip_forward()
+    #     self.root.after(1500, self.check_music_end)
+            
 
 if __name__ == "__main__":
     root = ctk.CTk()
