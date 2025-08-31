@@ -38,7 +38,8 @@ class MusicPlayer:
         self.check_music_end()    
 
         self.center_window(root, 400, 600)
-
+        
+# issues to fix
 # play track after track
 # seek the track
 # pause and resume on one button done now need to add progress bar to show the current status of the track
